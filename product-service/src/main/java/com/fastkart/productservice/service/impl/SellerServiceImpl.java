@@ -1,9 +1,9 @@
 package com.fastkart.productservice.service.impl;
 
 import com.fastkart.commonlibrary.exception.FastKartException;
-import com.fastkart.productservice.model.dto.seller.SellerProductDetailsDto;
 import com.fastkart.productservice.model.dto.ProductListDto;
 import com.fastkart.productservice.model.dto.seller.ProductPostDto;
+import com.fastkart.productservice.model.dto.seller.SellerProductDetailsDto;
 import com.fastkart.productservice.model.entity.Category;
 import com.fastkart.productservice.model.entity.Product;
 import com.fastkart.productservice.model.entity.User;
@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.fastkart.productservice.utils.Mapper.*;
+import static com.fastkart.productservice.utils.Mapper.productEntityToSellerProductDetailsDto;
+import static com.fastkart.productservice.utils.Mapper.productPostDtoToProduct;
 
 @Service
 @RequiredArgsConstructor
@@ -50,13 +51,10 @@ public class SellerServiceImpl implements SellerService {
     }
 
 
-
-
-
     @Override
     public List<ProductListDto> getProducts(Integer sellerId) {
         User seller = userService.getSeller(sellerId);
-        List<Product> productList = productRepository.findBySeller(seller);
+        List<Product> productList = productRepository.findBySellerWithListedDate(seller);
         return productList.stream().map(Mapper::productToProductDto).toList();
     }
 

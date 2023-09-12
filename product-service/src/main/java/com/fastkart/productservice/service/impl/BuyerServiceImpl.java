@@ -25,6 +25,7 @@ public class BuyerServiceImpl implements BuyerService {
     private final ProductRepository productRepository;
     private final BidRepository bidRepository;
     private final UserServiceImpl userService;
+
     @Override
     public List<ProductListDto> getProducts() {
         List<Product> productList = productRepository.findAll();
@@ -40,22 +41,22 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     public Bid bid(Integer buyerId, Integer productId, Double bidAmount) {
         Product product = getProductFromDb(productId);
-        if(bidAmount < product.getMinimumBidAmountBySeller()){
+        if (bidAmount < product.getMinimumBidAmountBySeller()) {
             throw new FastKartException(
                     "Bid amount too low",
                     400,
                     "Bid amount too low, minimum bid amount for product with id " + productId + " is " + product.getMinimumBidAmountBySeller());
         }
 
-        if(product.getMaximumBidAmountByBuyer() == null)
+        if (product.getMaximumBidAmountByBuyer() == null)
             product.setMaximumBidAmountByBuyer(bidAmount);
-        else if(bidAmount > product.getMaximumBidAmountByBuyer())
+        else if (bidAmount > product.getMaximumBidAmountByBuyer())
             product.setMaximumBidAmountByBuyer(bidAmount);
 
 
-        if(product.getMinimumBidAmountByBuyer() == null)
+        if (product.getMinimumBidAmountByBuyer() == null)
             product.setMinimumBidAmountByBuyer(bidAmount);
-        else if(bidAmount < product.getMinimumBidAmountByBuyer())
+        else if (bidAmount < product.getMinimumBidAmountByBuyer())
             product.setMinimumBidAmountByBuyer(bidAmount);
 
         User buyer = userService.getBuyer(buyerId);
@@ -63,7 +64,7 @@ public class BuyerServiceImpl implements BuyerService {
         bidId.setBidderId(buyerId);
         bidId.setProductId(productId);
 
-        if(bidRepository.existsByBidId(bidId)){
+        if (bidRepository.existsByBidId(bidId)) {
             throw new FastKartException(
                     "Bid already exists",
                     400,

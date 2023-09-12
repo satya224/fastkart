@@ -3,15 +3,17 @@ package com.fastkart.productservice.utils;
 import com.fastkart.productservice.model.dto.ProductListDto;
 import com.fastkart.productservice.model.dto.buyer.BuyerProductDetailsDto;
 import com.fastkart.productservice.model.dto.seller.BidderDto;
-import com.fastkart.productservice.model.dto.seller.SellerProductDetailsDto;
 import com.fastkart.productservice.model.dto.seller.ProductPostDto;
+import com.fastkart.productservice.model.dto.seller.SellerProductDetailsDto;
 import com.fastkart.productservice.model.entity.Bid;
 import com.fastkart.productservice.model.entity.Category;
 import com.fastkart.productservice.model.entity.Product;
 import com.fastkart.productservice.model.entity.User;
 
 public class Mapper {
-    private Mapper() { }
+    private Mapper() {
+    }
+
     public static Product productPostDtoToProduct(ProductPostDto productDto, Category category, User user) {
         Product productEntity = new Product();
         productEntity.setProductName(productDto.getName());
@@ -46,7 +48,6 @@ public class Mapper {
         buyerProductDetailsDto.setBidders(product.getBids().stream().map(Mapper::bidToBidderDto).toList());
         return buyerProductDetailsDto;
     }
-
 
 
     public static BidderDto bidToBidderDto(Bid bid) {

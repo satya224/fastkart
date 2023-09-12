@@ -1,6 +1,5 @@
 package com.fastkart.productservice.model.embeddable;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Data;
 

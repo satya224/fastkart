@@ -29,4 +29,12 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED.value(),
                 Arrays.toString(badCredentialsException.getStackTrace()));
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleException(Exception exception) {
+        return new ErrorResponse(exception.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                Arrays.toString(exception.getStackTrace()));
+    }
 }

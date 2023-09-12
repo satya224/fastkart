@@ -22,10 +22,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer userId;
+    @Column(unique = true)
     private String username;
     private String password;
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "roleId")
     private Role role;
     @CreationTimestamp
     private Instant createdAt;

@@ -51,10 +51,7 @@ public class Mapper {
 
 
     public static BidderDto bidToBidderDto(Bid bid) {
-        BidderDto bidderDto = new BidderDto();
-        bidderDto.setAmount(bid.getBidAmount());
-        bidderDto.setName(bid.getBidder().getUsername());
-        return bidderDto;
+        return new BidderDto(bid.getBidder().getUsername(), bid.getBidAmount());
     }
 
     public static ProductListDto productToProductDto(Product product) {

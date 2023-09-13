@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fastkart.productservice.model.embeddable.BidId;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
@@ -18,6 +19,7 @@ public class Bid {
     @MapsId("bidderId")
     @JoinColumn(name = "bidderId")
     private User bidder;
+    @ToString.Exclude
     @JsonBackReference
     @ManyToOne
     @MapsId("productId")

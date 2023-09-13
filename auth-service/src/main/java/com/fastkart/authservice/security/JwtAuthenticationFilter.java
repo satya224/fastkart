@@ -1,7 +1,6 @@
 package com.fastkart.authservice.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
+import com.fastkart.commonlibrary.exception.FastKartException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,21 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         //Authorization = Bearer abc.def.xyz
         String requestHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String username = null;
+        String username;
         String token;
         if (StringUtils.hasText(requestHeader) && requestHeader.startsWith("Bearer")) {
             token = requestHeader.substring(7);
-            try {
-                username = this.jwtHelper.getUsernameFromToken(token);
-            } catch (IllegalArgumentException e) {
-                log.info("Illegal Argument while fetching the username !!\n" + e.getMessage());
-            } catch (ExpiredJwtException e) {
-                log.info("Given jwt token is expired !!\n" + e.getMessage());
-            } catch (MalformedJwtException e) {
-                log.info("Some changed has done in token !! Invalid Token\n" + e.getMessage());
-            } catch (Exception e) {
-                log.info(e.getMessage());
-            }
+            username = this.jwtHelper.getUsernameFromToken(token);
         } else {
             filterChain.doFilter(request, response);
             return;
@@ -63,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                log.info("Validation fails !!");
+                throw new FastKartException("JWT Exception", HttpStatus.UNAUTHORIZED.value(), "Token not valid");
             }
         }
         filterChain.doFilter(request, response);

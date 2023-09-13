@@ -2,6 +2,7 @@ package com.fastkart.authservice.exception;
 
 import com.fastkart.commonlibrary.exception.ErrorResponse;
 import com.fastkart.commonlibrary.exception.FastKartException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,23 @@ public class GlobalExceptionHandler {
                         fastKartException.getErrorCode(),
                         fastKartException.getErrorReason()));
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        return new ErrorResponse(illegalArgumentException.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        Arrays.toString(illegalArgumentException.getStackTrace()));
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleJWTException(JwtException jwtException) {
+        return new ErrorResponse(jwtException.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                Arrays.toString(jwtException.getStackTrace()));
+    }
+
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

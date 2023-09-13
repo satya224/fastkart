@@ -36,11 +36,12 @@ public class SellerController {
     @PostMapping(value = "products", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
     public String addProducts(@RequestParam("file") MultipartFile file,
-                              @RequestHeader("userId") Integer sellerId,
-                              @RequestHeader("role") String role) throws IOException {
+                                                 @RequestHeader("userId") Integer sellerId,
+                                                 @RequestHeader("role") String role) throws IOException {
         log.info("Inside addProducts method of SellerController");
         validateSeller(role);
-        return sellerService.addProducts(sellerId, file);
+        sellerService.addProducts(sellerId, file);
+        return "File uploaded successfully";
     }
 
 

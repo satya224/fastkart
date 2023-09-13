@@ -12,16 +12,24 @@ import com.fastkart.productservice.model.entity.Product;
 import com.fastkart.productservice.model.entity.User;
 import com.fastkart.productservice.repository.CategoryRepository;
 import com.fastkart.productservice.repository.ProductRepository;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fastkart.productservice.utils.Mapper.productPostDtoToProduct;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -143,6 +151,64 @@ public class SellerServiceImplTest {
         verify(productRepository).findBySellerWithListedDate(seller);
         assertFalse(result.isEmpty());
     }
+
+    @Test
+    public void testAddProducts() throws IOException {
+        // Mock sellerId
+        Integer sellerId = 1;
+
+        FileInputStream excelFile = new FileInputStream("src/test/resources/test-file.xlsx");
+        MockMultipartFile file = new MockMultipartFile("file", "test-file.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFile);
+
+
+        // Mock User and Category
+        User seller = new User();
+        Category category = new Category();
+        category.setCategoryId(1);
+
+        when(userService.getSeller(sellerId)).thenReturn(seller);
+        when(categoryRepository.findById(anyInt())).thenReturn(java.util.Optional.of(category));
+
+        Sheet sheet = mock(Sheet.class);
+
+        // Mock the behavior of the rows in the sheet
+        int numberOfRows = 6;
+        List<Product> productList = new ArrayList<>();
+
+        for (int i = 1; i <= numberOfRows; i++) {
+            Row row = mock(Row.class);
+
+            when(sheet.getRow(i)).thenReturn(row);
+            when(row.getCell(0)).thenReturn(mock(Cell.class));
+            when(row.getCell(1)).thenReturn(mock(Cell.class));
+            when(row.getCell(2)).thenReturn(mock(Cell.class));
+            when(row.getCell(3)).thenReturn(mock(Cell.class));
+
+            when(row.getCell(0).getStringCellValue()).thenReturn("product" + (i+10));
+            when(row.getCell(1).getStringCellValue()).thenReturn("description" + (i+10));
+            when(row.getCell(2).getNumericCellValue()).thenReturn(1000.00 * i);
+            when(row.getCell(3).getNumericCellValue()).thenReturn((double) i);
+
+            ProductPostDto productDto = new ProductPostDto();
+            productDto.setName("product" + (i+10));
+            productDto.setDescription("description" + (i+10));
+            productDto.setMinimumBidAmount(1000.0 * i);
+            productDto.setCategoryId(i);
+
+            Product product = productPostDtoToProduct(productDto, category, seller);
+            productList.add(product);
+        }
+
+        // Mock the behavior of the productRepository
+        when(productRepository.saveAll(anyList())).thenReturn(productList);
+
+        // Call the addProducts method
+        sellerService.addProducts(sellerId, file);
+
+        // Verify that the productRepository's saveAll method was called with the correct list
+        verify(productRepository, times(1)).saveAll(productList);
+    }
+
 
     private Product createProduct() {
 

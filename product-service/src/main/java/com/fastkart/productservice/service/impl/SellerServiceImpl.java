@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +39,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public Product addProduct(ProductPostDto productDto, Integer sellerId) {
+        log.info("Inside addProduct method of SellerServiceImpl");
         Category category = getCategory(productDto.getCategoryId());
         User seller = userService.getSeller(sellerId);
         Product product = productPostDtoToProduct(productDto, category, seller);
@@ -55,6 +57,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public SellerProductDetailsDto getProduct(Integer productId, Integer sellerId) {
+        log.info("Inside getProduct method of SellerServiceImpl");
         User seller = userService.getSeller(sellerId);
         Product product = productRepository.findByIdWithBids(productId, seller)
                 .orElseThrow(() -> new FastKartException(
@@ -67,13 +70,16 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public List<ProductListDto> getProducts(Integer sellerId) {
+        log.info("Inside getProducts method of SellerServiceImpl");
         User seller = userService.getSeller(sellerId);
         List<Product> productList = productRepository.findBySellerWithListedDate(seller);
         return productList.stream().map(Mapper::productToProductDto).toList();
     }
 
     @Override
-    public String addProducts(Integer sellerId, MultipartFile file) throws IOException {
+    @Async
+    public void addProducts(Integer sellerId, MultipartFile file) throws IOException {
+        log.info("Inside addProducts method of SellerServiceImpl");
         List<Product> productList = new ArrayList<>();
         User seller = userService.getSeller(sellerId);
 
@@ -95,14 +101,11 @@ public class SellerServiceImpl implements SellerService {
             productPostDto.setCategoryId(categoryId);
 
             Category category = getCategory(productPostDto.getCategoryId());
-
             Product product = productPostDtoToProduct(productPostDto, category, seller);
             productList.add(product);
         }
 
         productRepository.saveAll(productList);
-        return "Products added successfully";
-
     }
 
 

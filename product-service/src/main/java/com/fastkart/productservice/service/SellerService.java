@@ -16,5 +16,5 @@ public interface SellerService {
 
     List<ProductListDto> getProducts(Integer sellerId);
 
-    String addProducts(Integer sellerId, MultipartFile file) throws IOException;
+    void addProducts(Integer sellerId, MultipartFile file) throws IOException;
 }

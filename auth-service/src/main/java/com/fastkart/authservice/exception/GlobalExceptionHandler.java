@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         return new ErrorResponse(illegalArgumentException.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        Arrays.toString(illegalArgumentException.getStackTrace()));
+                HttpStatus.BAD_REQUEST.value(),
+                Arrays.toString(illegalArgumentException.getStackTrace()));
     }
 
     @ExceptionHandler(JwtException.class)

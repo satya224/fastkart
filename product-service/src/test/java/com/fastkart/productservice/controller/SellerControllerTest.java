@@ -46,11 +46,11 @@ public class SellerControllerTest {
     @Test
     public void testGetProduct() {
         SellerProductDetailsDto productDetailsDto = new SellerProductDetailsDto();
-        when(sellerService.getProduct(1)).thenReturn(productDetailsDto);
+        when(sellerService.getProduct(1, 1)).thenReturn(productDetailsDto);
 
-        SellerProductDetailsDto result = sellerController.getProduct(1, "SELLER");
+        SellerProductDetailsDto result = sellerController.getProduct(1, 1, "SELLER");
 
-        verify(sellerService).getProduct(1);
+        verify(sellerService).getProduct(1, 1);
         assertEquals(productDetailsDto, result);
     }
 

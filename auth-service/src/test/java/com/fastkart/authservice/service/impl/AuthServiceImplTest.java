@@ -9,7 +9,6 @@ import com.fastkart.authservice.repository.RoleRepository;
 import com.fastkart.authservice.repository.UserRepository;
 import com.fastkart.authservice.security.CustomUserDetailsService;
 import com.fastkart.authservice.security.JwtHelper;
-import com.fastkart.authservice.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

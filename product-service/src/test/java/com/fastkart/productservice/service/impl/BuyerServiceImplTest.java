@@ -104,7 +104,6 @@ public class BuyerServiceImplTest {
         Bid result = buyerService.bid(buyerId, productId, 60.0);
 
 
-
         // Verify that the repository methods were called and the result is not null
         verify(productRepository).findByIdWithBids(productId);
         verify(bidRepository).existsByBidId(any());

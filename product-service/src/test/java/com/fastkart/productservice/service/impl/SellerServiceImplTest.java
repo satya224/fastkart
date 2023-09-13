@@ -98,15 +98,19 @@ public class SellerServiceImplTest {
         expected.setMaximumBidAmountByBuyer(20.0);
         expected.setBidders(List.of(new BidderDto("test_buyer", 10.0)));
 
+        int sellerId = 1;
+        User seller = new User();
+        when(userService.getSeller(sellerId)).thenReturn(seller);
+
         int productId = 1;
         Product product = createProduct();
-        when(productRepository.findByIdWithBids(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdWithBids(productId, seller)).thenReturn(Optional.of(product));
 
         // Call the service method
-        SellerProductDetailsDto result = sellerService.getProduct(productId);
+        SellerProductDetailsDto result = sellerService.getProduct(productId, 1);
 
         // Verify that the repository method was called and the result is not null
-        verify(productRepository).findByIdWithBids(productId);
+        verify(productRepository).findByIdWithBids(productId, seller);
         assertEquals(result, expected);
     }
 
@@ -117,7 +121,7 @@ public class SellerServiceImplTest {
         Product product = createProduct();
         when(productRepository.findByIdWithBids(productId)).thenReturn(Optional.empty());
 
-        assertThrows(FastKartException.class, () -> sellerService.getProduct(productId));
+        assertThrows(FastKartException.class, () -> sellerService.getProduct(productId, 1));
     }
 
     @Test

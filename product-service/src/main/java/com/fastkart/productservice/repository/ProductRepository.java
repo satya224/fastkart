@@ -15,6 +15,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.bids b WHERE p.productId = :productId ORDER BY b.bidTime DESC")
     Optional<Product> findByIdWithBids(Integer productId);
 
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.bids b WHERE p.productId = :productId and p.seller = :seller ORDER BY b.bidTime DESC")
+    Optional<Product> findByIdWithBids(Integer productId, User seller);
+
     @Query("SELECT p FROM Product p WHERE p.seller = :seller ORDER BY p.listedDate DESC")
     List<Product> findBySellerWithListedDate(User seller);
 }

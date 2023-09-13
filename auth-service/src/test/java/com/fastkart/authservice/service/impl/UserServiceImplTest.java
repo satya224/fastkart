@@ -4,7 +4,6 @@ import com.fastkart.authservice.model.entity.Role;
 import com.fastkart.authservice.model.entity.User;
 import com.fastkart.authservice.repository.UserRepository;
 import com.fastkart.authservice.security.JwtHelper;
-import com.fastkart.authservice.service.impl.UserServiceImpl;
 import com.fastkart.commonlibrary.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class UserServiceImplTest {
 
